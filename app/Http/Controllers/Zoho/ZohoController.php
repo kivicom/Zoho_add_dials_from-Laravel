@@ -16,9 +16,12 @@ class ZohoController extends Controller
                                     'client_secret'	=> '7efb3b965bb8e9c5868e41d44bd8efa43523101dda',
                                     'grant_type'	=> 'refresh_token'
                                 ];
+    protected $access_token;
 
     protected $url_deal = "https://www.zohoapis.com/crm/v2/Deals";
-    protected $access_token;
+    protected $url_tasks = "https://www.zohoapis.com/crm/v2/Tasks";
+
+
 
 
     /**
@@ -30,46 +33,59 @@ class ZohoController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function deal_data(Request $request)
-    {
-        $data = $request->except('_token');
-        return $this->insert_deal($data);
-
-    }
-
-    /**
      * @param $data
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function insert_deal($data)
+    public function add_deal(Request $request)
     {
         $this->access_token = $this->generate_access_token();
 
-        $post_data = [
+        $data_deal = $request->only(['Deal_Name','Account_Name','Closing_Date','Stage','Description']);
+        $data_task = $request->only(['Subject','Due_Date','Priority','Description']);
+
+        $post_deal = [
             'data' => [
-                $data
+                $data_deal
+            ]
+        ];
+        $ch = $this->curl_init($this->url_deal, $post_deal);
+        $ch = json_decode($ch, true);
+        $id = $ch['data'][0]['details']['id'];
+
+        return $this->add_task($id,$data_task);
+    }
+
+    public function add_task($id, $data_task)
+    {
+        $this->access_token = $this->generate_access_token();
+
+        $data_task['$se_module'] = 'Deals';
+        $data_task['What_Id'] = $id;
+
+        $post_task = [
+            'data' => [
+                $data_task
             ]
         ];
 
+        $this->curl_init($this->url_tasks, $post_task);
+
+        return redirect()->route('home')->with('success', 'Сделка добавлена');
+    }
+
+    public function curl_init($url, $data)
+    {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->url_deal);
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Authorization: Zoho-oauthtoken '.$this->access_token,
             'Content-Type: application/x-www-form-urlencoded'
         ));
-        curl_exec($ch);
-
-        /*$response = curl_exec($ch);
-        $response = json_decode($response);*/
-
-        return redirect()->route('home')->with('success', 'Сделка добавлена');
+        return curl_exec($ch);
     }
 
     /**

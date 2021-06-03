@@ -12,43 +12,79 @@
     <title>Create deal</title>
 </head>
 <body>
-<h1>Create deal</h1>
 
 <div class="container">
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="row" style="justify-content: center;">
-        <div class="col-6">
-            @if (session()->has('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+        <div class="col-12">
             <form action="{{ route('add_deal') }}" method="post">
                 @csrf
-                <div class="form-group">
-                    <label for="deal_name">Deal Name</label>
-                    <input type="text" class="form-control" id="deal_name" placeholder="" name="Deal_Name" required>
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Create deal</h3>
+
+                        <div class="form-group">
+                            <label for="deal_name">Deal Name</label>
+                            <input type="text" class="form-control" id="deal_name" placeholder="" name="Deal_Name"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="account_name">Account Name</label>
+                            <input type="text" class="form-control" id="account_name" placeholder="" name="Account_Name"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="closing_Date">Closing Date</label>
+                            <input type="date" class="form-control" id="closing_Date" placeholder="" name="Closing_Date"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stage">Stage</label>
+                            <select class="form-control" id="stage" name="Stage" required>
+                                <option>Needs Analysis</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description of deal</label>
+                            <textarea class="form-control" id="description" rows="3" name="Description"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <h3>Create task</h3>
+
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="" name="Subject"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Due_Date">Due Date</label>
+                            <input type="date" class="form-control" id="Due_Date" placeholder="" name="Due_Date"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Priority">Priority</label>
+                            <select class="form-control" id="Priority" name="Priority" required>
+                                <option>Normal</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description of task</label>
+                            <textarea class="form-control" id="description" rows="3" name="Description"></textarea>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-                <div class="form-group">
-                    <label for="account_name">Account Name</label>
-                    <input type="text" class="form-control" id="account_name" placeholder="" name="Account_Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="closing_Date">Closing Date</label>
-                    <input type="date" class="form-control" id="closing_Date" placeholder="" name="Closing_Date" required>
-                </div>
-                <div class="form-group">
-                    <label for="stage">Stage</label>
-                    <select class="form-control" id="stage" name="Stage" required>
-                        <option>Needs Analysis</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" rows="3" name="Description"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+
     </div>
 </div>
 

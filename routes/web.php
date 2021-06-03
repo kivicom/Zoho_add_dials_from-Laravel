@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[ZohoController::class, 'index'])->name('home');
-Route::post('/add_deal',[ZohoController::class, 'deal_data'])->name('add_deal');
+Route::post('/add_deal',[ZohoController::class, 'add_deal'])->name('add_deal');
